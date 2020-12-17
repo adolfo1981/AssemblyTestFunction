@@ -37,6 +37,7 @@ namespace AssemblyTestFunction
 
         public Task OnExecutingAsync(FunctionExecutingContext executingContext, CancellationToken cancellationToken)
         {
+            //Simulate loading Domain assembly multiple times
             _alc = new SimpleUnloadableAssemblyLoadContext();
             var dllPath = Assembly.GetExecutingAssembly().Location;
             var dllParentPath = Path.GetDirectoryName(dllPath);

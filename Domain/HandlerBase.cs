@@ -23,11 +23,11 @@ namespace Domain
                 var assemblies = AppDomain.CurrentDomain.GetAssemblies().Where(x => x.FullName == "Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null").ToArray();
 
                 //REALISTIC TEST
-                RealisticTest(assemblies, @event);
+                //RealisticTest(assemblies, @event);
                 //GOOD EVENT TEST
                 //GoodEventTest(assemblies, @event);
                 //BAD EVENT TEST
-                //BadEventTest(assemblies, @event);
+                BadEventTest(assemblies, @event);
 
             }
             catch (Exception ex)
@@ -69,6 +69,7 @@ namespace Domain
             var badEvent = assemblies.Count() > 1 ? GetEventFromWrongAssembly(@event, assemblies) : @event;
             var method = GetType().GetMethod("Handle", new[] { badEvent.GetType() });
             method.Invoke(this, new[] { badEvent });
+        
         }
 
         private object GetEventFromWrongAssembly(object @event,Assembly[] assemblies)
