@@ -20,21 +20,39 @@ namespace Domain
         {
             try
             {
-                //var test = GetLoadedAssembly(this.GetType().Assembly);
                 var assemblies = AppDomain.CurrentDomain.GetAssemblies().Where(x => x.FullName == "Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null").ToArray();
-                var random = new Random();
-                int index = 0;
-                int max = assemblies.Count() > 0 ? assemblies.Count() -1 : 0;
-                int randomIndex = random.Next(max);
-                var testAssembly = assemblies[randomIndex];
 
-                var execAs = Assembly.GetExecutingAssembly();
-                var areEqual = execAs.Equals(this.GetType().Assembly);
+                //GOOD TEST OR BAD TEST
+                var goodEventTest = false;
 
+                //PICKING RANDOM ASSEMBLY TEST
+                //var random = new Random();
+                //int index = 0;
+                //int max = assemblies.Count() > 0 ? assemblies.Count() -1 : 0;
+                //int randomIndex = random.Next(max);
+                //var testAssembly = assemblies[randomIndex];
+
+                //var execAs = Assembly.GetExecutingAssembly();
+                //var areEqual = execAs.Equals(this.GetType().Assembly);
                 //var newEventType = this.GetType().Assembly.GetType(@event.GetType().ToString());
-                var newEventType = testAssembly.GetType(@event.GetType().ToString());
-                var method = GetType().GetMethod("Handle", new[] { newEventType }); ;
-                method.Invoke(this, new[] { @event });
+                //Getting type from wrong assembly
+                //var newEventType = testAssembly.GetType(@event.GetType().ToString());
+                //var method = GetType().GetMethod("Handle", new[] { newEventType }); ;
+
+                if(goodEventTest)
+                {
+                //GOOD EVENT TEST
+                    var goodEvent = assemblies.Count() > 1 ? GetEventFromRightAssembly(@event, assemblies) : @event;
+                    var method = GetType().GetMethod("Handle", new[] { goodEvent.GetType() });
+                    method.Invoke(this, new[] { goodEvent });
+                    }else
+                {
+                //BAD EVENT TEST
+                    var badEvent = assemblies.Count() > 1 ? GetEventFromWrongAssembly(@event, assemblies) : @event;
+                    var method = GetType().GetMethod("Handle", new[] { badEvent.GetType() });
+                    method.Invoke(this, new[] { badEvent });
+                }
+
             }
             catch (Exception ex)
             {
@@ -44,6 +62,24 @@ namespace Domain
                     **** In Exception - NUMBER OF Guided DLLs Loaded: {domainDllCount} ****";
                 throw new ArgumentException(message, ex);
             }
+        }
+
+        private object GetEventFromWrongAssembly(object @event,Assembly[] assemblies)
+        {
+            var wrongAssembly = assemblies.Where(x => !x.Equals(Assembly.GetExecutingAssembly())).FirstOrDefault();
+            var wrongType = wrongAssembly.GetType(@event.ToString());
+            var json = SerializeHelper.SerializeWithTypeName(@event);
+            var newEvent = SerializeHelper.Deserialize(json,wrongType);
+            return newEvent;
+        }
+
+        private object GetEventFromRightAssembly(object @event,Assembly[] assemblies)
+        {
+            var goodAssembly = assemblies.Where(x => x.Equals(Assembly.GetExecutingAssembly())).FirstOrDefault();
+            var goodType = goodAssembly.GetType(@event.ToString());
+            var json = SerializeHelper.SerializeWithTypeName(@event);
+            var newEvent = SerializeHelper.Deserialize(json,goodType);
+            return newEvent;
         }
 
         private Assembly GetLoadedAssembly(Assembly assembly)
