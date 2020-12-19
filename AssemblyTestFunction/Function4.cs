@@ -14,7 +14,7 @@ using System.Reflection;
 
 namespace AssemblyTestFunction
 {
-    public class Function4 : IFunctionInvocationFilter
+    public class Function4 //: IFunctionInvocationFilter
     {
         private readonly IValidateService _validateService;
         private ILogger _logger;
@@ -27,22 +27,22 @@ namespace AssemblyTestFunction
             ApplicationHelper.Startup(_logger);
         }
 
-        public Task OnExecutedAsync(FunctionExecutedContext executedContext, CancellationToken cancellationToken)
-        {
-            _alc.Unload();
-            return Task.CompletedTask;
-        }
+        //public Task OnExecutedAsync(FunctionExecutedContext executedContext, CancellationToken cancellationToken)
+        //{
+        //    _alc.Unload();
+        //    return Task.CompletedTask;
+        //}
 
-        public Task OnExecutingAsync(FunctionExecutingContext executingContext, CancellationToken cancellationToken)
-        {
-            //Simulate loading Domain assembly multiple times
-            _alc = new SimpleUnloadableAssemblyLoadContext();
-            var dllPath = Assembly.GetExecutingAssembly().Location;
-            var dllParentPath = Path.GetDirectoryName(dllPath);
-            _alc.LoadFromAssemblyPath(Path.Combine(dllParentPath, "Domain.dll"));
+        //public Task OnExecutingAsync(FunctionExecutingContext executingContext, CancellationToken cancellationToken)
+        //{
+        //    //Simulate loading Domain assembly multiple times
+        //    _alc = new SimpleUnloadableAssemblyLoadContext();
+        //    var dllPath = Assembly.GetExecutingAssembly().Location;
+        //    var dllParentPath = Path.GetDirectoryName(dllPath);
+        //    _alc.LoadFromAssemblyPath(Path.Combine(dllParentPath, "Domain.dll"));
 
-            return Task.CompletedTask;
-        }
+        //    return Task.CompletedTask;
+        //}
 
         [FunctionName("Function4")]
         public async Task<IActionResult> Run(

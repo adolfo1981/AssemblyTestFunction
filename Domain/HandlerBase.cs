@@ -25,9 +25,9 @@ namespace Domain
                 //REALISTIC TEST
                 //RealisticTest(assemblies, @event);
                 //GOOD EVENT TEST
-                //GoodEventTest(assemblies, @event);
+                GoodEventTest(assemblies, @event);
                 //BAD EVENT TEST
-                BadEventTest(assemblies, @event);
+                //BadEventTest(assemblies, @event);
 
             }
             catch (Exception ex)
