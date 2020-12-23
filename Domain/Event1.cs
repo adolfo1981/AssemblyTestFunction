@@ -9,6 +9,6 @@ namespace Domain
         public Guid Id { get; set; } = Guid.NewGuid();
         public DateTime DateTime { get; set; } = DateTime.UtcNow;
         public string Name = "Event1";
-        public PushResult PushResult { get; set; } = new PushResult();
+        public ItemPushed ItemPushed { get; set; }
     }
 }

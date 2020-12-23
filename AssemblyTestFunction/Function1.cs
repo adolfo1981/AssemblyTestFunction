@@ -15,7 +15,7 @@ using System.Reflection;
 
 namespace AssemblyTestFunction
 {
-    public class Function1 //: IFunctionInvocationFilter
+    public class Function1 : IFunctionInvocationFilter
     {
         private readonly IValidateService _validateService;
         private ILogger _logger;
@@ -28,23 +28,23 @@ namespace AssemblyTestFunction
           _logger.LogInformation($"DOMAIN ASSEMBLIES LOADED ({msg}): {domainDllCount}");
         }
 
-        //public Task OnExecutedAsync(FunctionExecutedContext executedContext, CancellationToken cancellationToken)
-        //{
-        //    _alc.Unload();
-        //    PrintCount("POST");
-        //    return Task.CompletedTask;
-        //}
+        public Task OnExecutedAsync(FunctionExecutedContext executedContext, CancellationToken cancellationToken)
+        {
+            _alc.Unload();
+            PrintCount("POST");
+            return Task.CompletedTask;
+        }
 
-        //public Task OnExecutingAsync(FunctionExecutingContext executingContext, CancellationToken cancellationToken)
-        //{
-        //    //Simulate loading Domain assembly multiple times
-        //    _alc = new SimpleUnloadableAssemblyLoadContext();
-        //    var dllPath = Assembly.GetExecutingAssembly().Location;
-        //    var dllParentPath = Path.GetDirectoryName(dllPath);
-        //    _alc.LoadFromAssemblyPath(Path.Combine(dllParentPath, "Domain.dll"));
-        //    PrintCount("PRE");
-        //    return Task.CompletedTask;
-        //}
+        public Task OnExecutingAsync(FunctionExecutingContext executingContext, CancellationToken cancellationToken)
+        {
+            //Simulate loading Domain assembly multiple times
+            _alc = new SimpleUnloadableAssemblyLoadContext();
+            var dllPath = Assembly.GetExecutingAssembly().Location;
+            var dllParentPath = Path.GetDirectoryName(dllPath);
+            _alc.LoadFromAssemblyPath(Path.Combine(dllParentPath, "Domain.dll"));
+            PrintCount("PRE");
+            return Task.CompletedTask;
+        }
 
         public Function1(IValidateService validateService, ILoggerFactory loggerFactory)
         { 

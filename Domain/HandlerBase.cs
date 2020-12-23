@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -25,9 +26,9 @@ namespace Domain
                 //REALISTIC TEST
                 //RealisticTest(assemblies, @event);
                 //GOOD EVENT TEST
-                GoodEventTest(assemblies, @event);
+                //GoodEventTest(assemblies, @event);
                 //BAD EVENT TEST
-                //BadEventTest(assemblies, @event);
+                BadEventTest(assemblies, @event);
 
             }
             catch (Exception ex)
@@ -62,6 +63,7 @@ namespace Domain
             var goodEvent = assemblies.Count() > 1 ? GetEventFromRightAssembly(@event, assemblies) : @event;
             var method = GetType().GetMethod("Handle", new[] { goodEvent.GetType() });
             method.Invoke(this, new[] { goodEvent });
+            //((dynamic)this).Handle((dynamic)@event);
         }
 
         private void BadEventTest(Assembly[] assemblies, object @event)
@@ -77,7 +79,20 @@ namespace Domain
             var wrongAssembly = assemblies.Where(x => !x.Equals(Assembly.GetExecutingAssembly())).FirstOrDefault();
             var wrongType = wrongAssembly.GetType(@event.ToString());
             var json = SerializeHelper.SerializeWithTypeName(@event);
-            var newEvent = SerializeHelper.Deserialize(json,wrongType);
+            //var newEvent = SerializeHelper.Deserialize(json,wrongType);
+
+            MySerializationBinder sb = new MySerializationBinder();
+            sb.KnownTypes = Assembly.GetExecutingAssembly().GetTypes();
+
+
+            var newEvent = JsonConvert.DeserializeObject(json, wrongType, new JsonSerializerSettings
+            {
+                TypeNameHandling = TypeNameHandling.All,
+                SerializationBinder = sb,
+                //TypeNameAssemblyFormat = System.Runtime.Serialization.Formatters.FormatterAssemblyStyle.Full
+                TypeNameAssemblyFormatHandling = TypeNameAssemblyFormatHandling.Simple
+            });
+
             return newEvent;
         }
 

@@ -24,8 +24,14 @@ namespace Services
 
             List<object> events = new List<object>();
             var event1 = new Event1();
-            var pushResult = new PushResult(){Result = new ClientTaxDto()};
-            event1.PushResult = pushResult;
+            var pushResult = new PushResult(){
+                Result = new ClientTaxDto()
+                };
+            var itemPushed = new ItemPushed(){
+                Error = "Test Error" 
+            };
+            itemPushed.PushResult = pushResult;
+            event1.ItemPushed = itemPushed;
             var event2 = new Event2();
             events.Add(GetEventObject(event1));
             events.Add(GetEventObject(event2));
