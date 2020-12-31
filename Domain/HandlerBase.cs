@@ -22,7 +22,7 @@ namespace Domain
         {
             try
             {
-                var assemblies = AppDomain.CurrentDomain.GetAssemblies().Where(x => x.FullName == "Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null").ToArray();
+                //var assemblies = AppDomain.CurrentDomain.GetAssemblies().Where(x => x.FullName == "Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null").ToArray();
 
                 //REALISTIC TEST
                 //RealisticTest(assemblies, @event);
