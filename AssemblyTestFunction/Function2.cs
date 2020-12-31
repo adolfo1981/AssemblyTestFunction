@@ -14,7 +14,7 @@ using System.Reflection;
 
 namespace AssemblyTestFunction
 {
-    public class Function2 //: IFunctionInvocationFilter
+    public class Function2
     {
         private readonly IValidateService _validateService;
         private ILogger _logger;
@@ -27,50 +27,24 @@ namespace AssemblyTestFunction
             ApplicationHelper.Startup(_logger);
         }
 
-        //public Task OnExecutedAsync(FunctionExecutedContext executedContext, CancellationToken cancellationToken)
-        //{
-        //    _alc.Unload();
-        //    return Task.CompletedTask;
-        //}
-
-        //public Task OnExecutingAsync(FunctionExecutingContext executingContext, CancellationToken cancellationToken)
-        //{
-        //    //Simulate loading Domain assembly multiple times
-        //    _alc = new SimpleUnloadableAssemblyLoadContext();
-        //    var dllPath = Assembly.GetExecutingAssembly().Location;
-        //    var dllParentPath = Path.GetDirectoryName(dllPath);
-        //    _alc.LoadFromAssemblyPath(Path.Combine(dllParentPath, "Domain.dll"));
-
-        //    return Task.CompletedTask;
-        //}
-
         [FunctionName("Function2")]
-        public async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = null)] HttpRequest req,
+        public async Task Run(
+            [ServiceBusTrigger("validate-taxes", Connection = "GuidedActivationPayrollServiceBusConnectionString")]
+            ValidateClientCommand validateClient,
             ILogger log)
         {
-            log.LogInformation("C# HTTP trigger function2 processed a request.");
+            log.LogInformation("C# HTTP trigger function1 processed a request.");
 
-            string phone = req.Query["phone"];
+            //var dllPath = System.Reflection.Assembly.GetExecutingAssembly().Location;
 
-            string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-            dynamic data = JsonConvert.DeserializeObject(requestBody);
-            phone = phone ?? data?.phone;
+            var name = "Test";
+            bool isValid = _validateService.ValidateName(name);
 
-            bool isValid = _validateService.ValidatePhone(phone);
+            string responseMessage = string.IsNullOrEmpty(name)
+                ? "This HTTP triggered function1 executed successfully. Pass a name in the query string or in the request body for a personalized response."
+                : $"Hello, {name}. This HTTP triggered function1 executed successfully. Is Name Valid: {isValid}";
 
-            string responseMessage = string.IsNullOrEmpty(phone)
-                ? "This HTTP triggered function2 executed successfully. Pass a name in the query string or in the request body for a personalized response."
-                : $"This HTTP triggered function2 executed successfully. Is Phone Valid: {isValid}";
-
-            //var rand = new System.Random();
-            //var timeout = rand.Next(1,3) * 1000;
-
-            //log.LogDebug($"TIMEOUT: {timeout}");
-
-            //Thread.Sleep(timeout);
-
-            return new OkObjectResult(responseMessage);
+            return;
         }
     }
 }
