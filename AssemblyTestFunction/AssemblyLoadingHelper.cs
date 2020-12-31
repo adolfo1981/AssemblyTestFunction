@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Loader;
@@ -25,18 +26,24 @@ namespace AssemblyTestFunction
             AppDomain currentDomain = AppDomain.CurrentDomain;
             AssemblyLoadContext.Default.Resolving += Default_Resolving;
             currentDomain.AssemblyLoad += new AssemblyLoadEventHandler(MyAssemblyLoadEventHandler);
-            currentDomain.AssemblyResolve += CurrentDomain_AssemblyResolve;
+            var dllPath = Assembly.GetExecutingAssembly().Location;
+            var dllParentPath = Path.GetDirectoryName(dllPath);
+            var assemblyFullPath = Path.Combine(dllParentPath, "Domain.dll");
+
+            //currentDomain.AssemblyResolve += new AssemblyResolver("Domain", assemblyFullPath).AssemblyResolve;
+            //currentDomain.AssemblyResolve += CurrentDomain_AssemblyResolve;
             //PrintLoadedAssemblies(currentDomain);
             // Lists all five assemblies
         }
 
         private static Assembly Default_Resolving(AssemblyLoadContext context, AssemblyName name)
         {
-            if (name.Name == "Domain")
+            //if (name.Name == "Domain")
             {
-                var domainAssemblies = AppDomain.CurrentDomain.GetAssemblies().Where(x => x.FullName == "Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" &&
-                x.Equals(Assembly.GetExecutingAssembly())).ToList();
-                return domainAssemblies.FirstOrDefault();
+                //var domainAssemblies = AppDomain.CurrentDomain.GetAssemblies().Where(x => x.FullName == "Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" &&
+                //x.Equals(Assembly.GetExecutingAssembly())).ToList();
+                //var domainAssemblies = AppDomain.CurrentDomain.GetAssemblies().Where(x => x.FullName == "Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null").ToList();
+                //return domainAssemblies.FirstOrDefault();
             }
             return null;
         }

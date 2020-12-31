@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -17,7 +18,8 @@ namespace Domain
         {
             return JsonConvert.SerializeObject(item, Formatting.Indented, new JsonSerializerSettings
             {
-                TypeNameHandling = TypeNameHandling.All
+                TypeNameHandling = TypeNameHandling.All,
+                //ContractResolver = new DefaultContractResolver()
             });
         }
 
@@ -34,6 +36,19 @@ namespace Domain
             return JsonConvert.DeserializeObject(body, type, new JsonSerializerSettings
             {
                 TypeNameHandling = TypeNameHandling.All
+            });
+        }
+
+        public static T DeserializeWithTypeName<T>(string body)
+        {
+            return JsonConvert.DeserializeObject<T>(body, new JsonSerializerSettings
+            {
+                TypeNameHandling = TypeNameHandling.All,
+                //Error = delegate(object sender, Newtonsoft.Json.Serialization.ErrorEventArgs args)
+                //{
+                //    //errors.Add(args.ErrorContext.Error.Message);
+                //    args.ErrorContext.Handled = true;
+                //},
             });
         }
 

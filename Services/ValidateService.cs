@@ -33,7 +33,7 @@ namespace Services
             itemPushed.PushResult = pushResult;
             event1.ItemPushed = itemPushed;
             var event2 = new Event2();
-            events.Add(GetEventObject(event1));
+            events.Add(GetEventObject(itemPushed));
             events.Add(GetEventObject(event2));
 
             handler.PlayEvents(events.ToArray());

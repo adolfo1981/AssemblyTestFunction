@@ -16,6 +16,7 @@ namespace Domain
                 PlayEvent(@event);                
             }
         }
+        protected abstract void CallHandle(string typeName, string json);
 
         public void PlayEvent(object @event)
         {
@@ -28,8 +29,13 @@ namespace Domain
                 //GOOD EVENT TEST
                 //GoodEventTest(assemblies, @event);
                 //BAD EVENT TEST
-                BadEventTest(assemblies, @event);
+                //BadEventTest(assemblies, @event);
 
+                //var json = SerializeHelper.SerializeWithTypeName(@event);
+                //CallHandle(@event.GetType().Name, json);0
+
+                var method = GetType().GetMethod("Handle", new[] { @event.GetType() });
+                method.Invoke(this, new[] { @event });
             }
             catch (Exception ex)
             {
@@ -78,6 +84,7 @@ namespace Domain
         {
             var wrongAssembly = assemblies.Where(x => !x.Equals(Assembly.GetExecutingAssembly())).FirstOrDefault();
             var wrongType = wrongAssembly.GetType(@event.ToString());
+
             var json = SerializeHelper.SerializeWithTypeName(@event);
             //var newEvent = SerializeHelper.Deserialize(json,wrongType);
 
@@ -88,9 +95,14 @@ namespace Domain
             var newEvent = JsonConvert.DeserializeObject(json, wrongType, new JsonSerializerSettings
             {
                 TypeNameHandling = TypeNameHandling.All,
-                SerializationBinder = sb,
+                //SerializationBinder = sb,
                 //TypeNameAssemblyFormat = System.Runtime.Serialization.Formatters.FormatterAssemblyStyle.Full
-                TypeNameAssemblyFormatHandling = TypeNameAssemblyFormatHandling.Simple
+                //TypeNameAssemblyFormatHandling = TypeNameAssemblyFormatHandling.Simple
+                Error = delegate (object sender, Newtonsoft.Json.Serialization.ErrorEventArgs args)
+                {
+                    //errors.Add(args.ErrorContext.Error.Message);
+                    args.ErrorContext.Handled = true;
+                }
             });
 
             return newEvent;

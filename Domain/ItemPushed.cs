@@ -7,7 +7,7 @@ namespace Domain
     public class ItemPushed : IDomainEvent
     {
         public string PerformUid { get; set; }
-        public List<ValidationError> ValidationErrors { get; set; } = new List<ValidationError>();
+        //public List<ValidationError> ValidationErrors { get; set; } = new List<ValidationError>();
         public string Error { get; set; }
         public Guid SagaId { get; set; }
 
