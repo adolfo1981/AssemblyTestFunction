@@ -28,32 +28,25 @@ namespace AssemblyTestFunction
         }
 
         [FunctionName("Function3")]
-        public async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = null)] HttpRequest req,
+        public async Task Run(
+            [ServiceBusTrigger("validate-deductions", Connection = "GuidedActivationPayrollServiceBusConnectionString")]
+            ValidateClientCommand validateClient,
             ILogger log)
         {
-            log.LogInformation("C# HTTP trigger function2 processed a request.");
+            log.LogInformation("C# HTTP trigger function1 processed a request.");
 
-            string phone = req.Query["phone"];
+            //var dllPath = System.Reflection.Assembly.GetExecutingAssembly().Location;
 
-            string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-            dynamic data = JsonConvert.DeserializeObject(requestBody);
-            phone = phone ?? data?.phone;
+            var name = "Test";
+            bool isValid = _validateService.ValidateName(name);
 
-            bool isValid = _validateService.ValidatePhone(phone);
+            Thread.Sleep(3000);
 
-            string responseMessage = string.IsNullOrEmpty(phone)
+            string responseMessage = string.IsNullOrEmpty(name)
                 ? "This HTTP triggered function3 executed successfully. Pass a name in the query string or in the request body for a personalized response."
-                : $"This HTTP triggered function3 executed successfully. Is Phone Valid: {isValid}";
+                : $"Hello, {name}. This HTTP triggered function1 executed successfully. Is Name Valid: {isValid}";
 
-            //var rand = new System.Random();
-            //var timeout = rand.Next(1,3) * 1000;
-
-            //log.LogDebug($"TIMEOUT: {timeout}");
-
-            //Thread.Sleep(timeout);
-
-            return new OkObjectResult(responseMessage);
+            return;
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,7 @@ namespace Domain
 {
     public abstract class HandlerBase
     {
+        public ILogger Logger {get;set;}
         public void PlayEvents(IEnumerable<object> events)
         {
             foreach(var @event in events)
@@ -20,6 +22,9 @@ namespace Domain
 
         public void PlayEvent(object @event)
         {
+            var domainDllCount = AppDomain.CurrentDomain.GetAssemblies().Count(x => x.FullName == "Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null");
+            Logger.LogInformation($"PlayEvent. Number of Domain DLL's: {domainDllCount}");
+
             try
             {
                 //var assemblies = AppDomain.CurrentDomain.GetAssemblies().Where(x => x.FullName == "Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null").ToArray();
@@ -40,7 +45,7 @@ namespace Domain
             catch (Exception ex)
             {
                 var assemblies = AppDomain.CurrentDomain.GetAssemblies();
-                var domainDllCount = AppDomain.CurrentDomain.GetAssemblies().Count(x => x.FullName == "Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null");
+                //domainDllCount = AppDomain.CurrentDomain.GetAssemblies().Count(x => x.FullName == "Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null");
                 var message = $@"Error processing {@event.GetType()} for {this.GetType()} {Environment.NewLine}
                     **** In Exception - NUMBER OF Guided DLLs Loaded: {domainDllCount} ****";
                 throw new ArgumentException(message, ex);

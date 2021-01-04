@@ -11,7 +11,7 @@
     }
   },
   "logging": {
-    "fileLoggingMode": "always",
+    "fileLoggingMode": "debugOnly",
     "logLevel": {
       "default": "Trace",
       "Host.Results": "Trace",

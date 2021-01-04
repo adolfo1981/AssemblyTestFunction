@@ -21,8 +21,10 @@ namespace Services
             _logger.LogInformation("NAME VALID!");
 
             var handler = new Domain.EventHandler();
+            handler.Logger = _logger;
 
             List<object> events = new List<object>();
+            var ede1 = new EventDataEntity();
             var event1 = new Event1();
             var pushResult = new PushResult(){
                 Result = new ClientTaxDto()
@@ -30,11 +32,18 @@ namespace Services
             var itemPushed = new ItemPushed(){
                 Error = "Test Error" 
             };
+
+            ede1.Data = SerializeHelper.SerializeWithTypeName(itemPushed);
+
             itemPushed.PushResult = pushResult;
             event1.ItemPushed = itemPushed;
             var event2 = new Event2();
-            events.Add(GetEventObject(itemPushed));
-            events.Add(GetEventObject(event2));
+            var ede2 = new EventDataEntity();
+            ede2.Data = SerializeHelper.SerializeWithTypeName(event2);
+
+
+            events.Add(EventHelper.GetObject(ede1));
+            events.Add(EventHelper.GetObject(ede2));
 
             handler.PlayEvents(events.ToArray());
 
@@ -46,29 +55,21 @@ namespace Services
             _logger.LogInformation("PHONE VALID!");
 
             var handler = new Domain.EventHandler();
+            handler.Logger = _logger;
 
             List<object> events = new List<object>();
             var event1 = new Event1();
+            var ede1 = new EventDataEntity();
+            ede1.Data = SerializeHelper.SerializeWithTypeName(event1);
             var event2 = new Event2();
-            events.Add(GetEventObject(event1));
-            events.Add(GetEventObject(event2));
+            var ede2 = new EventDataEntity();
+            ede2.Data = SerializeHelper.SerializeWithTypeName(event2);
+            events.Add(EventHelper.GetObject(ede1));
+            events.Add(EventHelper.GetObject(ede2));
 
             handler.PlayEvents(events.ToArray());
 
             return true;
-        }
-
-        private object GetEventObject(IDomainEvent @event)
-        {
-            var json = JsonConvert.SerializeObject(@event, Formatting.Indented, new JsonSerializerSettings
-            {
-                TypeNameHandling = TypeNameHandling.All
-            });
-            var result = JsonConvert.DeserializeObject(json, new JsonSerializerSettings
-            {
-                TypeNameHandling = TypeNameHandling.All
-            });
-            return result;
         }
     }
 }
