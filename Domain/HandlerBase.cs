@@ -29,13 +29,13 @@ namespace Domain
                 //GOOD EVENT TEST
                 //GoodEventTest(assemblies, @event);
                 //BAD EVENT TEST
-                //BadEventTest(assemblies, @event);
+                BadEventTest(assemblies, @event);
 
                 //var json = SerializeHelper.SerializeWithTypeName(@event);
                 //CallHandle(@event.GetType().Name, json);0
 
-                var method = GetType().GetMethod("Handle", new[] { @event.GetType() });
-                method.Invoke(this, new[] { @event });
+                //var method = GetType().GetMethod("Handle", new[] { @event.GetType() });
+                //method.Invoke(this, new[] { @event });
             }
             catch (Exception ex)
             {
@@ -74,9 +74,10 @@ namespace Domain
 
         private void BadEventTest(Assembly[] assemblies, object @event)
         { 
-            var badEvent = assemblies.Count() > 1 ? GetEventFromWrongAssembly(@event, assemblies) : @event;
-            var method = GetType().GetMethod("Handle", new[] { badEvent.GetType() });
-            method.Invoke(this, new[] { badEvent });
+            //var badEvent = assemblies.Count() > 1 ? GetEventFromWrongAssembly(@event, assemblies) : @event;
+            //var method = GetType().GetMethod("Handle", new[] { badEvent.GetType() });
+            var method = GetType().GetMethod("Handle", new[] { @event.GetType() });
+            method.Invoke(this, new[] { @event });
         
         }
 
@@ -98,11 +99,11 @@ namespace Domain
                 //SerializationBinder = sb,
                 //TypeNameAssemblyFormat = System.Runtime.Serialization.Formatters.FormatterAssemblyStyle.Full
                 //TypeNameAssemblyFormatHandling = TypeNameAssemblyFormatHandling.Simple
-                Error = delegate (object sender, Newtonsoft.Json.Serialization.ErrorEventArgs args)
-                {
-                    //errors.Add(args.ErrorContext.Error.Message);
-                    args.ErrorContext.Handled = true;
-                }
+                //Error = delegate (object sender, Newtonsoft.Json.Serialization.ErrorEventArgs args)
+                //{
+                //    //errors.Add(args.ErrorContext.Error.Message);
+                //    args.ErrorContext.Handled = true;
+                //}
             });
 
             return newEvent;

@@ -21,7 +21,7 @@ public static class ApplicationHelper
                 {
                     if (!IsStarted)
                     {
-                        //AssemblyLoadingHelper.ConfigureAssemblyLoading(logger);
+                        AssemblyLoadingHelper.ConfigureAssemblyLoading(logger);
                         IsStarted = true;
                     }
                 }

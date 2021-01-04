@@ -12,10 +12,12 @@ using System.Threading;
 using System.Linq;
 using Microsoft.Azure.WebJobs.Host;
 using System.Reflection;
+using Domain;
+using System.Runtime.Loader;
 
 namespace AssemblyTestFunction
 {
-    public class Function1 //: IFunctionInvocationFilter
+    public class Function1 : IFunctionInvocationFilter
     {
         private readonly IValidateService _validateService;
         private ILogger _logger;
@@ -28,23 +30,26 @@ namespace AssemblyTestFunction
           _logger.LogInformation($"DOMAIN ASSEMBLIES LOADED ({msg}): {domainDllCount}");
         }
 
-        //public Task OnExecutedAsync(FunctionExecutedContext executedContext, CancellationToken cancellationToken)
-        //{
-        //    _alc.Unload();
-        //    PrintCount("POST");
-        //    return Task.CompletedTask;
-        //}
+        public Task OnExecutedAsync(FunctionExecutedContext executedContext, CancellationToken cancellationToken)
+        {
+            //_alc.Unload();
+            PrintCount("POST");
+            return Task.CompletedTask;
+        }
 
-        //public Task OnExecutingAsync(FunctionExecutingContext executingContext, CancellationToken cancellationToken)
-        //{
-        //    //Simulate loading Domain assembly multiple times
-        //    _alc = new SimpleUnloadableAssemblyLoadContext();
-        //    var dllPath = Assembly.GetExecutingAssembly().Location;
-        //    var dllParentPath = Path.GetDirectoryName(dllPath);
-        //    _alc.LoadFromAssemblyPath(Path.Combine(dllParentPath, "Domain.dll"));
-        //    PrintCount("PRE");
-        //    return Task.CompletedTask;
-        //}
+        public Task OnExecutingAsync(FunctionExecutingContext executingContext, CancellationToken cancellationToken)
+        {
+            //Simulate loading Domain assembly multiple times
+            //_alc = new SimpleUnloadableAssemblyLoadContext();
+            var dllPath = Assembly.GetExecutingAssembly().Location;
+            var dllParentPath = Path.GetDirectoryName(dllPath);
+            //_alc.LoadFromAssemblyPath(Path.Combine(dllParentPath, "Domain.dll"));
+            //PrintCount("PRE");
+            var type = typeof(HandlerBase);
+            //AssemblyLoadContext.Default.LoadFromAssemblyName(new AssemblyName("Domain"));
+            AssemblyLoadContext.Default.LoadFromAssemblyPath(Path.Combine(dllParentPath, "Domain.dll"));
+            return Task.CompletedTask;
+        }
 
         public Function1(IValidateService validateService, ILoggerFactory loggerFactory)
         { 

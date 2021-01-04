@@ -23,12 +23,15 @@ namespace AssemblyTestFunction
         public static void ConfigureAssemblyLoading(ILogger logger)
         {
             _logger = logger;
-            AppDomain currentDomain = AppDomain.CurrentDomain;
-            AssemblyLoadContext.Default.Resolving += Default_Resolving;
-            currentDomain.AssemblyLoad += new AssemblyLoadEventHandler(MyAssemblyLoadEventHandler);
-            var dllPath = Assembly.GetExecutingAssembly().Location;
-            var dllParentPath = Path.GetDirectoryName(dllPath);
-            var assemblyFullPath = Path.Combine(dllParentPath, "Domain.dll");
+            //AppDomain currentDomain = AppDomain.CurrentDomain;
+            //AssemblyLoadContext.Default.Resolving += Default_Resolving;
+            //currentDomain.AssemblyLoad += new AssemblyLoadEventHandler(MyAssemblyLoadEventHandler);
+            //var dllPath = Assembly.GetExecutingAssembly().Location;
+            //var dllParentPath = Path.GetDirectoryName(dllPath);
+            //var assemblyFullPath = Path.Combine(dllParentPath, "Domain.dll");
+
+            //var functionsAssemblyResolver = new FunctionsAssemblyResolver();
+            FunctionsAssemblyResolver.RedirectAssembly();
 
             //currentDomain.AssemblyResolve += new AssemblyResolver("Domain", assemblyFullPath).AssemblyResolve;
             //currentDomain.AssemblyResolve += CurrentDomain_AssemblyResolve;
