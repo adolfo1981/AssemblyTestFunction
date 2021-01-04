@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using Streamstone;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,21 +9,36 @@ namespace Domain
 {
 public static class EventHelper
     {
-        //public static EventData Event(IDomainEvent e, Guid prospectId)
-        //{
-        //    var id = Guid.NewGuid();
+        public static EventData Event(IDomainEvent e, Guid prospectId)
+        {
+            var id = Guid.NewGuid();
 
-        //    var properties = new EventDataEntity
-        //    {
-        //        Id = id,
-        //        TypeFullName = e.GetType().AssemblyQualifiedName,
-        //        Data = JSON(e),
-        //        DateTime = DateTime.UtcNow,
-        //        ProspectId = prospectId
-        //    };
+            var properties = new EventDataEntity
+            {
+                Id = id,
+                TypeFullName = e.GetType().AssemblyQualifiedName,
+                Data = JSON(e),
+                DateTime = DateTime.UtcNow,
+                ProspectId = prospectId
+            };
 
-        //    return new EventData(EventId.From(id), EventProperties.From(properties));
-        //}
+            return new EventData(EventId.From(id), EventProperties.From(properties));
+        }
+
+        public static EventDataEntity GetEventDataEntity(IDomainEvent e, Guid prospectId)
+        {
+            var id = Guid.NewGuid();
+
+            var properties = new EventDataEntity
+            {
+                Id = id,
+                TypeFullName = e.GetType().AssemblyQualifiedName,
+                Data = JSON(e),
+                DateTime = DateTime.UtcNow,
+                ProspectId = prospectId
+            };
+            return properties;
+        }
 
         public static object GetObject(EventDataEntity @event)
         {

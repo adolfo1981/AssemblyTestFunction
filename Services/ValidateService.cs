@@ -24,7 +24,6 @@ namespace Services
             handler.Logger = _logger;
 
             List<object> events = new List<object>();
-            var ede1 = new EventDataEntity();
             var event1 = new Event1();
             var pushResult = new PushResult(){
                 Result = new ClientTaxDto()
@@ -33,13 +32,12 @@ namespace Services
                 Error = "Test Error" 
             };
 
-            ede1.Data = SerializeHelper.SerializeWithTypeName(itemPushed);
+            var ede1 = EventHelper.GetEventDataEntity(itemPushed,Guid.Empty);
 
             itemPushed.PushResult = pushResult;
             event1.ItemPushed = itemPushed;
             var event2 = new Event2();
-            var ede2 = new EventDataEntity();
-            ede2.Data = SerializeHelper.SerializeWithTypeName(event2);
+            var ede2 = EventHelper.GetEventDataEntity(event2, Guid.Empty);
 
 
             events.Add(EventHelper.GetObject(ede1));
@@ -59,11 +57,9 @@ namespace Services
 
             List<object> events = new List<object>();
             var event1 = new Event1();
-            var ede1 = new EventDataEntity();
-            ede1.Data = SerializeHelper.SerializeWithTypeName(event1);
+            var ede1 = EventHelper.GetEventDataEntity(event1,Guid.Empty);
             var event2 = new Event2();
-            var ede2 = new EventDataEntity();
-            ede2.Data = SerializeHelper.SerializeWithTypeName(event2);
+            var ede2 = EventHelper.GetEventDataEntity(event2,Guid.Empty);
             events.Add(EventHelper.GetObject(ede1));
             events.Add(EventHelper.GetObject(ede2));
 
