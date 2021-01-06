@@ -5,10 +5,12 @@ using System.Diagnostics;
 
 namespace Domain
 {
-    public class EventHandler : HandlerBase, 
+    public class EventHandler : TypedEventModel, 
                     IHandle<ItemPushed>, 
                     IHandle<Event2>
     {
+        public override string StreamName => throw new NotImplementedException();
+
         public void Handle(ItemPushed message)
         {
             Trace.WriteLine("Calling Handle for ItemPushed event..");

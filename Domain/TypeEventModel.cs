@@ -8,8 +8,9 @@ using System.Text;
 
 namespace Domain
 {
-    public abstract class HandlerBase
+    public abstract class TypedEventModel
     {
+        public abstract string StreamName { get; }
         public ILogger Logger {get;set;}
         public void PlayEvents(IEnumerable<object> events)
         {

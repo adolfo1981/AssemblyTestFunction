@@ -40,8 +40,6 @@ namespace AssemblyTestFunction
             var name = "Test";
             bool isValid = _validateService.ValidateName(name);
 
-            Thread.Sleep(3000);
-
             string responseMessage = string.IsNullOrEmpty(name)
                 ? "This HTTP triggered function3 executed successfully. Pass a name in the query string or in the request body for a personalized response."
                 : $"Hello, {name}. This HTTP triggered function1 executed successfully. Is Name Valid: {isValid}";
